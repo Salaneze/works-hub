@@ -1,0 +1,80 @@
+/* Хаб нарочно без своего лица: цвета берутся из темы Telegram (--tg-theme-*,
+   их ставит SDK), свои значения — только запасные для обычного браузера.
+   Характер несут превью работ и цветная точка у каждой. */
+:root {
+  --f-bg: #f1f1ef; --f-card: #ffffff; --f-ink: #161618; --f-muted: #6e6e74;
+  color-scheme: light dark;
+}
+@media (prefers-color-scheme: dark) {
+  :root { --f-bg: #111113; --f-card: #1c1c1f; --f-ink: #ededee; --f-muted: #9a9aa1; }
+}
+:root {
+  --bg: var(--tg-theme-secondary-bg-color, var(--f-bg));
+  --card: var(--tg-theme-section-bg-color, var(--tg-theme-bg-color, var(--f-card)));
+  --ink: var(--tg-theme-text-color, var(--f-ink));
+  --muted: var(--tg-theme-hint-color, var(--f-muted));
+  --line: color-mix(in srgb, var(--ink) 10%, transparent);
+  --ease: cubic-bezier(.2, .8, .2, 1);
+}
+
+* { box-sizing: border-box; }
+html { -webkit-text-size-adjust: 100%; }
+body {
+  margin: 0; background: var(--bg); color: var(--ink);
+  font: 16px/1.5 system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+}
+.wrap {
+  max-width: 1040px; margin: 0 auto;
+  padding: 32px 16px calc(48px + env(safe-area-inset-bottom));
+}
+
+.intro { max-width: 34rem; margin-bottom: 40px; }
+.kicker { margin: 0 0 8px; font-size: 13px; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); }
+h1 { margin: 0 0 12px; font-size: clamp(28px, 6vw, 44px); line-height: 1.1; letter-spacing: -.02em; font-weight: 700; }
+.lead { margin: 0; color: var(--muted); }
+
+section + section { margin-top: 48px; }
+h2 { margin: 0 0 16px; font-size: 20px; letter-spacing: -.01em; }
+
+.grid { display: grid; gap: 16px; }
+@media (min-width: 720px) { .grid { grid-template-columns: repeat(2, 1fr); } }
+@media (min-width: 1000px) { section:last-child .grid { grid-template-columns: repeat(3, 1fr); } }
+
+.work {
+  display: flex; flex-direction: column; overflow: hidden;
+  background: var(--card); color: inherit; text-decoration: none;
+  border: 1px solid var(--line); border-radius: 18px;
+  transition: transform .2s var(--ease), border-color .2s var(--ease);
+  -webkit-tap-highlight-color: transparent;
+}
+/* Цвет работы — атрибутом, не style="": CSP без unsafe-inline режет инлайн-стили */
+.work[data-accent="amber"] { --accent: #d9a521; }
+.work[data-accent="brass"] { --accent: #c9a35b; }
+.work[data-accent="lime"] { --accent: #84cc16; }
+.work[data-accent="wine"] { --accent: #a3304a; }
+.work img { display: block; width: 100%; height: auto; aspect-ratio: 16 / 10; object-fit: cover; background: var(--line); }
+.work-body { padding: 16px 16px 20px; }
+.work-kind { display: flex; align-items: center; gap: 8px; margin: 0 0 4px; font-size: 13px; color: var(--muted); }
+.work-kind::before { content: ""; width: 8px; height: 8px; border-radius: 50%; background: var(--accent); }
+.work h3 { margin: 0 0 8px; font-size: 22px; line-height: 1.2; letter-spacing: -.01em; }
+.work h3::after {
+  content: "\2192"; display: inline-block; margin-left: 8px; color: var(--muted);
+  transition: transform .2s var(--ease), color .2s var(--ease);
+}
+.work p:not(.work-kind) { margin: 0; color: var(--muted); font-size: 15px; }
+.tags { display: flex; flex-wrap: wrap; gap: 6px; margin: 12px 0 0; padding: 0; list-style: none; }
+.tags li { padding: 3px 10px; border: 1px solid var(--line); border-radius: 99px; font-size: 13px; }
+
+.work:active { transform: scale(.985); }
+.work:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
+@media (hover: hover) {
+  .work:hover { border-color: color-mix(in srgb, var(--accent) 55%, transparent); }
+  .work:hover h3::after { transform: translateX(4px); color: var(--accent); }
+}
+
+.note { margin: 12px 0 0; font-size: 14px; color: var(--muted); }
+
+@media (prefers-reduced-motion: reduce) {
+  .work, .work h3::after { transition: none; }
+  .work:active { transform: none; }
+}

@@ -1,0 +1,35 @@
+# Хаб — статика, сервер ему не нужен. Наружу только страница, стили, скрипт
+# и превью; thumbs.py и исходники остаются в репо.
+name: pages
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: true
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deploy.outputs.page_url }}
+    steps:
+      - uses: actions/checkout@v7
+      - run: |
+          mkdir -p _site/img
+          cp index.html style.css app.js _site/
+          cp img/*.jpg _site/img/
+      - uses: actions/upload-pages-artifact@v5
+        with:
+          path: _site
+      - id: deploy
+        uses: actions/deploy-pages@v5
